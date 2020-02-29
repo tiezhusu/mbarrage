@@ -1,6 +1,6 @@
 <template>
   <div id="mbarrage">
-      <div class="mbarrage-bullet bullet-active" :class=[{active:isScroll},{pause:isShow}] v-for="(item,index) of list" :key="index">{{item.msg}}</div>
+      <div class="mbarrage-bullet bulletActive" :class="{scrollPause:!isScroll,scrollRestart:isScroll}" v-for="(item,index) of list" :key="index">{{item.msg}}</div>
       <!-- <div class="mbarrage-bullet">这是一条测试用弹幕</div> -->
   </div>
 </template>
@@ -44,7 +44,7 @@ export default {
   data() {
       return {
           list: [],
-          isScroll: false,
+          isScroll: true,
           isShow: false,
           number: 1,
       }
@@ -59,19 +59,19 @@ export default {
           
           
             setTimeout(() => {
-                this.isScroll = true
+                this.isScroll = false
             },2000)
             setTimeout(() => {
                 // let list = document.getElementsByClassName('active')
-                this.isShow = true
+                // this.isShow = true
 
                 // for(let item of list) {
                 //     console.log(item)
                 // }
-                // this.isScroll = false
+                this.isScroll = true
             },6000)
             setTimeout(() => {
-                this.isShow = false
+                // this.isShow = false
             },10000)
       },
       initbullet(){
@@ -88,7 +88,26 @@ export default {
               let Bullet = document.getElementsByClassName('mbarrage-bullet')
               Bullet[0].className = 'mbarrage-bullet bullet-active'
           },2000)
-      }
+      },
+      $addBullet(item){
+        // 使用v-for来生成dom的话，有个问题，无法为每条弹幕设置初始位置
+        // 后续可能还是要用手动插入dom的形式来
+        console.log(item)
+      },
+      $pauseScroll(){
+        this.isScroll = false
+      },
+      $startScroll(){
+        this.isScroll = true
+      },
+      $clearBarrageList(){
+        // 暂时没有头绪
+        // 或者到时候，还是分成  正在发送的弹幕池，待发送的弹幕池？
+      },
+      $resetCanvas() {
+        
+      },
+
   },
   mounted() {
       this.init()
@@ -112,7 +131,7 @@ export default {
     white-space: nowrap;
     /* user-select: none; */
 }
-.active{
+.bulletActive{
     
     transform: translateX(-1000px);
     will-change:transform;   /* 重要样式 */
@@ -130,7 +149,11 @@ export default {
 
     
 }
-.pause{
-    animation-play-state:paused;
+.scrollPause{
+    animation-play-state: paused;
+}
+.scrollRestart{
+    animation-play-state: running;
+
 }
 </style>
